@@ -18,20 +18,22 @@ def submit():
         data = request.get_json()
         print("Received data:", data)
 
-        # Validate all required fields
-        required_keys = ["name", "company", "project", "message", "reason"]
+        # Validate required fields
+        required_keys = ["name", "company", "project", "email", "contact", "message", "reason"]
         if not data or not all(key in data and data[key] for key in required_keys):
             print("Missing one or more required fields.")
             return jsonify({"error": "Invalid data"}), 400
 
-        # Add timestamp
+        # Add timestamp to data
         data["timestamp"] = datetime.datetime.now().isoformat()
-        df = pd.DataFrame([data])
 
-        # Ensure directory exists
+        # Convert to DataFrame in desired column order
+        df = pd.DataFrame([data], columns=["name", "company", "project", "email", "contact", "message", "reason", "timestamp"])
+
+        # Ensure the directory exists
         os.makedirs(os.path.dirname(VISITOR_FILE), exist_ok=True)
 
-        # Append to or create Excel file
+        # Append to or create the Excel file
         if os.path.exists(VISITOR_FILE):
             existing_df = pd.read_excel(VISITOR_FILE)
             updated_df = pd.concat([existing_df, df], ignore_index=True)
