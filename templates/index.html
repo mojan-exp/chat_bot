@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chatbot | Mohit Janbandhu</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div id="chatbotBox">
+    <div id="chatWindow">
+      <div id="chatMessages"></div>
+      <div id="chatInputArea"></div>
+    </div>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chatMessages");
+    const inputArea = document.getElementById("chatInputArea");
+
+    function addMessage(text, from = 'bot') {
+      const msg = document.createElement("div");
+      msg.className = from;
+      msg.innerText = text;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function addOptions(options) {
+      inputArea.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.innerText = opt.label;
+        btn.onclick = opt.handler;
+        inputArea.appendChild(btn);
+      });
+    }
+
+    let formState = {};
+    let formStep = 0;
+
+    function startForm(reason) {
+      formState = { reason };
+      formStep = 1;
+      askNextFormField();
+    }
+
+    function askNextFormField() {
+      const steps = ['Your Name', 'Your Company', 'Project Title', 'Your Message'];
+      const keys = ['name', 'company', 'project', 'message'];
+
+      if (formStep > steps.length) {
+        submitForm();
+        return;
+      }
+
+      addMessage(`Please enter: ${steps[formStep - 1]}`);
+      
+      inputArea.innerHTML = '';
+      const input = document.createElement("input");
+      input.placeholder = steps[formStep - 1];
+      inputArea.appendChild(input);
+      input.focus();
+
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const val = input.value.trim();
+          if (val) {
+            formState[keys[formStep - 1]] = val;
+            addMessage(val, 'user');
+            formStep++;
+            if (formStep <= steps.length) {
+              askNextFormField();
+            } else {
+              submitForm();
+            }
+          }
+        }
+      });
+    }
+
+    async function submitForm() {
+      console.log("Submitting form state:", formState);  // Debug log
+      addMessage("Mohit Janbandhu will contact you soon.");
+      inputArea.innerHTML = '';
+
+      try {
+        const res = await fetch('/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formState)
+        });
+
+        const result = await res.json();
+        console.log("Server response:", result);
+      } catch (error) {
+        console.error("Submission error:", error);
+      }
+    }
+
+    function startBot() {
+      addMessage("Hi, Welcome");
+      setTimeout(() => {
+        addMessage("May I assist you?");
+        addOptions([
+          { label: "Yes", handler: showYesOptions },
+          { label: "No", handler: showNoOptions }
+        ]);
+      }, 500);
+    }
+
+    function showYesOptions() {
+      addMessage("How may I help you?");
+      addOptions([
+        { label: "Give Freelance Project", handler: () => startForm('Freelance Project') },
+        { label: "Hire Me", handler: () => startForm('Hiring') }
+      ]);
+    }
+
+    function showNoOptions() {
+      addMessage("No worries! You can:");
+      addOptions([
+        { label: "Explore Skills", handler: () => addMessage("Skills: Python, ML, LLMs...") },
+        { label: "Projects", handler: () => addMessage("Check out my AI projects.") },
+        { label: "About", handler: () => addMessage("I'm Mohit Janbandhu, Data Scientist.") }
+      ]);
+    }
+
+    window.onload = startBot;
+  </script>
+</body>
+</html>
