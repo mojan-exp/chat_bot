@@ -45,6 +45,14 @@ def submit():
     except Exception as e:
         print("Error occurred:", str(e))
         return jsonify({"error": "Internal server error"}), 500
+    
+# Route to download the Excel file
+@app.route("/download", methods=["GET"])
+def download_excel():
+    if os.path.exists(VISITOR_FILE):
+        return send_file(VISITOR_FILE, as_attachment=True)
+    else:
+        return "File not found", 404
 
 # Required for Render deployment
 if __name__ == "__main__":
