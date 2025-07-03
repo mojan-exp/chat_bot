@@ -80,12 +80,12 @@
     }
 
     async function submitForm() {
-      console.log("Submitting form state:", formState);  // Debug log
+      console.log("Submitting form state:", formState);
       addMessage("Mohit Janbandhu will contact you soon.");
       inputArea.innerHTML = '';
 
       try {
-        const res = await fetch('/submit', {
+        const res = await fetch('https://chat-bot-mj.onrender.com/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formState)
