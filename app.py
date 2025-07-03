@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file  # <-- Added send_file
+from flask import Flask, render_template, request, jsonify, send_file
 import pandas as pd
 import os
 import datetime
@@ -18,15 +18,20 @@ def submit():
         data = request.get_json()
         print("Received data:", data)
 
-        if not data or "message" not in data:
-            print("Missing required fields.")
+        # Validate all required fields
+        required_keys = ["name", "company", "project", "message", "reason"]
+        if not data or not all(key in data and data[key] for key in required_keys):
+            print("Missing one or more required fields.")
             return jsonify({"error": "Invalid data"}), 400
 
+        # Add timestamp
         data["timestamp"] = datetime.datetime.now().isoformat()
         df = pd.DataFrame([data])
 
+        # Ensure directory exists
         os.makedirs(os.path.dirname(VISITOR_FILE), exist_ok=True)
 
+        # Append to or create Excel file
         if os.path.exists(VISITOR_FILE):
             existing_df = pd.read_excel(VISITOR_FILE)
             updated_df = pd.concat([existing_df, df], ignore_index=True)
@@ -41,7 +46,6 @@ def submit():
         print("Error occurred:", str(e))
         return jsonify({"error": "Internal server error"}), 500
 
-# Route to download the Excel file
 @app.route("/download", methods=["GET"])
 def download_excel():
     if os.path.exists(VISITOR_FILE):
