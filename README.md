@@ -25,10 +25,10 @@ The Contact Chat Bot is a lightweight, interactive assistant integrated into a p
         Contact Number
 
         Custom Message
-    Confirmation message after successful submission
+Confirmation message after successful submission
 
-    Automatically stores all data in an Excel file with timestamps
+Automatically stores all data in an Excel file with timestamps
 
-    Built with HTML, CSS, JavaScript (frontend) and Flask, Pandas (backend)
+Built with HTML, CSS, JavaScript (frontend) and Flask, Pandas (backend)
 
-    Supports Excel file download through a backend route
+Supports Excel file download through a backend route
