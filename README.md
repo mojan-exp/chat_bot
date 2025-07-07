@@ -32,3 +32,5 @@ Automatically stores all data in an Excel file with timestamps
 Built with HTML, CSS, JavaScript (frontend) and Flask, Pandas (backend)
 
 Supports Excel file download through a backend route
+
+.
