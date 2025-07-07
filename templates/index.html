@@ -25,6 +25,14 @@
       chat.scrollTop = chat.scrollHeight;
     }
 
+    function addHTMLMessage(html, from = 'bot') {
+      const msg = document.createElement("div");
+      msg.className = from;
+      msg.innerHTML = html;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
     function addOptions(options) {
       inputArea.innerHTML = '';
       options.forEach(opt => {
@@ -118,15 +126,45 @@
     }
 
     function showNoOptions() {
-      addMessage("No worries! You can:");
+      addMessage("No worries! You can Explore :");
       addOptions([
-        { label: "Explore Skills", handler: () => addMessage("Skills: Python, ML, LLMs...") },
-        { label: "Projects", handler: () => addMessage("Check out my AI projects.") },
-        { label: "About", handler: () => addMessage("I'm Mohit Janbandhu, Data Scientist.") }
+        {
+          label: "Skills",
+          handler: () => window.open("https://mjanbandhu.github.io/MohitJanbandhu/mj/skills.html", "_blank")
+        },
+        {
+          label: "Projects",
+          handler: () => window.open("https://mjanbandhu.github.io/MohitJanbandhu/mj/projects.html", "_blank")
+        },
+        {
+          label: "About",
+          handler: () => window.open("https://mjanbandhu.github.io/MohitJanbandhu/mj/about.html", "_blank")
+        }
       ]);
     }
+
+
 
     window.onload = startBot;
   </script>
 </body>
 </html>
+
+  <!----  
+    function showNoOptions() {
+  addMessage("No worries! You can:");
+  addOptions([
+    {
+      label: "Explore Skills",
+      handler: () => addHTMLMessage(`<a href="https://mjanbandhu.github.io/MohitJanbandhu/mj/skills.html" target="_blank">View Skills</a>`)
+    },
+    {
+      label: "Projects",
+      handler: () => addHTMLMessage(`<a href="https://mjanbandhu.github.io/MohitJanbandhu/mj/projects.html" target="_blank">View Projects</a>`)
+    },
+    {
+      label: "About",
+      handler: () => addHTMLMessage(`<a href="https://mjanbandhu.github.io/MohitJanbandhu/mj/about.html" target="_blank">About Me</a>`)
+    }
+  ]);
+} -->
